@@ -87,6 +87,18 @@ def get_hotel(city:str,check_in:str,check_out:str)->str:
         amenities = hotel.get("amenities", [])
         amenities_text = ", ".join(amenities[:5]) if amenities else "N/A"
 
+        nearby_places = hotel.get("nearby_places", [])
+        airport_info = "N/A"
+        for place in nearby_places:
+            place_name = place.get("name", "")
+            if "airport" in place_name.lower():
+                transport_options = place.get("transportations", [])
+                transport_text = ", ".join(
+                    f"{t.get('type')}: {t.get('duration')}" for t in transport_options
+                )
+                airport_info = f"{place_name} ({transport_text})"
+                break
+
         link = hotel.get("link")
 
         summary = (
@@ -94,9 +106,43 @@ def get_hotel(city:str,check_in:str,check_out:str)->str:
             f"Rating: {rating} ({reviews} reviews)\n"
             f"  Price/night: {price_per_night} | Total: {total_price}\n"
             f"  Amenities: {amenities_text}\n"
+            f"  Distance from Airport: {airport_info}\n"
             f"  Link: {link}"
         )
 
         hotel_strings.append(summary)
 
     return "\n\n".join(hotel_strings)
+
+def get_places(city:str)->str:
+    """This is a tool which tells the tourist places of city
+    and the input is city in string format for the city to visit or to stay"""
+    url = f"https://www.searchapi.io/api/v1/search?engine=google_maps&q=places+to+visit+in+{city}&api_key={API_KEY}"
+    response=requests.get(url)
+    data=response.json()
+    local_results = data.get("local_results", [])
+    if not local_results:
+        return f"No places found for {city}."
+            
+    output = f"Places to visit in {city}:\n\n"
+    for i, place in enumerate(local_results, start=1):
+        name = place.get("title", "Unknown")
+        address = place.get("address", "Address not available")
+        rating = place.get("rating", "N/A")
+        reviews = place.get("reviews", "N/A")
+        place_type = place.get("type", "N/A")
+        description = place.get("description", "")
+        hours = place.get("hours", "N/A")
+                
+        output += f"{i}. {name}\n"
+        output += f"   Type: {place_type}\n"
+        output += f"   Rating: {rating} ({reviews} reviews)\n"
+        output += f"   Address: {address}\n"
+        output += f"   Hours: {hours}\n"
+        if description:
+            output += f"   Description: {description}\n"
+        output += "\n"
+            
+    return output.strip()
+
+
