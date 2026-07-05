@@ -3,6 +3,7 @@ chromadb>=0.5.0
 
 # Mistral AI (LLM + embeddings)
 mistralai>=1.0.0
+reportlab
 
 # Environment variable management
 python-dotenv>=1.0.0
