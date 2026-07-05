@@ -9,7 +9,11 @@ def get_flight(departure:str,arrival:str,date:str)->str:
     """This is a tool which helps to fetch live flight data for future and
      and input include the departure and arrival airport iata codes it must be in iata codes
      and date should be in the format of YYYY-MM-DD"""
-    url=f"https://www.searchapi.io/api/v1/search?engine=google_flights&flight_type=one_way&departure_id={departure}&arrival_id={arrival}&outbound_date={date}&api_key={API_KEY}"
+    url=(
+        f"https://www.searchapi.io/api/v1/search?engine=google_flights"
+        f"&flight_type=one_way&departure_id={departure}&arrival_id={arrival}"
+        f"&outbound_date={date}&currency=INR&gl=in&api_key={API_KEY}"
+    )
     response=requests.get(url=url)
     data=response.json()
     if "error" in data:
@@ -48,7 +52,7 @@ def get_flight(departure:str,arrival:str,date:str)->str:
         stop_text = "Non-stop" if stops == 0 else f"{stops} stop(s)"
 
         summary = (
-            f"${price} | {stop_text} | {total_duration} min total | "
+            f"₹{price} | {stop_text} | {total_duration} min total | "
             + " | ".join(leg_summaries)
         )
 
