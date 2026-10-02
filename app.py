@@ -9,7 +9,7 @@ load_dotenv()
 
 from langchain.agents import create_agent
 from tools import get_flight, get_hotel, get_places
-from langchain_mistralai import ChatMistralAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -335,7 +335,7 @@ def build_itinerary_pdf(itinerary_text: str, trip_query: str = "") -> bytes:
 
 @st.cache_resource(show_spinner=False)
 def get_agent():
-    llm = ChatMistralAI(model="mistral-small-2603")
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
     return create_agent(
         model=llm,
         tools=[get_flight, get_hotel, get_places],
