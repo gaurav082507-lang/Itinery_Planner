@@ -335,7 +335,7 @@ def build_itinerary_pdf(itinerary_text: str, trip_query: str = "") -> bytes:
 
 @st.cache_resource(show_spinner=False)
 def get_agent():
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+    llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash-lite")
     return create_agent(
         model=llm,
         tools=[get_flight, get_hotel, get_places],
